@@ -1,0 +1,57 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*$py.class
+.ipynb_checkpoints/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Environment / secrets
+.env
+.env.*
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Data (raw/processed data can be large or sensitive; keep folder structure only)
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+
+# Models & reports are generated artifacts, but we keep the final trained
+# model and reports for reproducibility/demo purposes on GitHub.
+# Uncomment the lines below if you prefer to exclude large binaries instead.
+# models/*.pkl
+# reports/*.png
+
+# Logs
+*.log
+logs/
+
+# Jupyter
+.ipynb_checkpoints
+
+# Streamlit
+.streamlit/secrets.toml
+
+# pytest / coverage
+.pytest_cache/
+.coverage
+htmlcov/
