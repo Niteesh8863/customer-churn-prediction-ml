@@ -55,3 +55,6 @@ logs/
 .pytest_cache/
 .coverage
 htmlcov/
+
+# Binaries
+cloudflared.exe
