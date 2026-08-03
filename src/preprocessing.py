@@ -64,8 +64,8 @@ def clean_raw_data(df: pd.DataFrame) -> pd.DataFrame:
     if ID_COLUMN in df.columns:
         df = df.drop(columns=[ID_COLUMN])
 
-    if df[TARGET_COLUMN].dtype == object:
-        df[TARGET_COLUMN] = df[TARGET_COLUMN].map({"Yes": 1, "No": 0})
+    if not pd.api.types.is_numeric_dtype(df[TARGET_COLUMN]):
+        df[TARGET_COLUMN] = df[TARGET_COLUMN].map({"Yes": 1, "No": 0}).astype(int)
 
     before = len(df)
     df = df.drop_duplicates()
