@@ -52,10 +52,11 @@ def inject_custom_css(theme: str) -> None:
     if theme == "Light":
         css = """
         <style>
+        @import url('https://cdn.jsdelivr.net/gh/mishra-ankit/gilroy-free-webfont@main/gilroy-webfont.css');
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
         html, body, [class*="css"] {
-            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Gilroy', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
         }
 
         .stApp {
@@ -159,10 +160,11 @@ def inject_custom_css(theme: str) -> None:
     else:
         css = """
         <style>
+        @import url('https://cdn.jsdelivr.net/gh/mishra-ankit/gilroy-free-webfont@main/gilroy-webfont.css');
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
         html, body, [class*="css"] {
-            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Gilroy', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
         }
 
         .stApp {
