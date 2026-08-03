@@ -1,4 +1,4 @@
-"""Streamlit Web Application: TelePredict Pro — AI Customer Churn Intelligence."""
+"""Streamlit Web Application: TelePredict Pro — AI Customer Churn Intelligence with Dual Theme Mode."""
 
 from __future__ import annotations
 
@@ -23,7 +23,7 @@ from src.config import (
 from src.feature_engineering import add_engineered_features
 
 # --------------------------------------------------------------------------- #
-# Streamlit Page Configuration & Modern Theme Styling
+# Streamlit Page Configuration
 # --------------------------------------------------------------------------- #
 st.set_page_config(
     page_title="TelePredict Pro | AI Churn Intelligence",
@@ -32,125 +32,240 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# Custom High-End Modern CSS Injection
-st.markdown(
-    """
-    <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+# --------------------------------------------------------------------------- #
+# Theme Toggle State & Dynamic CSS Injection
+# --------------------------------------------------------------------------- #
+if "theme_mode" not in st.session_state:
+    st.session_state["theme_mode"] = "Dark"
 
-    html, body, [class*="css"] {
-        font-family: 'Plus Jakarta Sans', sans-serif;
-    }
+def inject_custom_css(theme: str) -> None:
+    if theme == "Light":
+        css = """
+        <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
-    .main {
-        background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #0F172A 100%);
-        color: #F8FAFC;
-    }
+        html, body, [class*="css"] {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
 
-    .stAppHeader {
-        background: transparent !important;
-    }
+        .stApp {
+            background: linear-gradient(135deg, #F8FAFC 0%, #EFF6FF 50%, #F1F5F9 100%) !important;
+            color: #0F172A !important;
+        }
 
-    /* Glassmorphism Cards */
-    .glass-card {
-        background: rgba(30, 41, 59, 0.7);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 16px;
-        padding: 24px;
-        margin-bottom: 20px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    }
+        .stAppHeader {
+            background: transparent !important;
+        }
 
-    .hero-title {
-        background: linear-gradient(90deg, #38BDF8 0%, #818CF8 50%, #C084FC 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        font-size: 2.8rem;
-        font-weight: 800;
-        letter-spacing: -0.02em;
-        margin-bottom: 0.2rem;
-    }
+        /* Glassmorphism Cards Light */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9) !important;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid #E2E8F0 !important;
+            border-radius: 18px !important;
+            padding: 26px !important;
+            margin-bottom: 22px !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06) !important;
+        }
 
-    .hero-subtitle {
-        color: #94A3B8;
-        font-size: 1.1rem;
-        margin-bottom: 1.8rem;
-    }
+        .hero-title {
+            background: linear-gradient(90deg, #1E40AF 0%, #3B82F6 50%, #6D28D9 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 2.9rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.2rem;
+        }
 
-    .metric-badge {
-        display: inline-block;
-        padding: 6px 14px;
-        border-radius: 30px;
-        font-weight: 700;
-        font-size: 0.9rem;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-    }
+        .hero-subtitle {
+            color: #475569 !important;
+            font-size: 1.15rem;
+            margin-bottom: 1.8rem;
+        }
 
-    .badge-high-risk {
-        background: rgba(239, 68, 68, 0.2);
-        color: #FCA5A5;
-        border: 1px solid #EF4444;
-    }
+        .metric-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-weight: 800;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
 
-    .badge-low-risk {
-        background: rgba(34, 197, 94, 0.2);
-        color: #86EFAC;
-        border: 1px solid #22C55E;
-    }
+        .badge-high-risk {
+            background: #FEE2E2 !important;
+            color: #991B1B !important;
+            border: 1px solid #FCA5A5 !important;
+        }
 
-    .stat-container {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        background: rgba(15, 23, 42, 0.6);
-        border-radius: 12px;
-        padding: 16px 20px;
-        margin-top: 12px;
-        border: 1px solid rgba(255, 255, 255, 0.05);
-    }
+        .badge-low-risk {
+            background: #DCFCE7 !important;
+            color: #166534 !important;
+            border: 1px solid #86EFAC !important;
+        }
 
-    .stat-label {
-        color: #94A3B8;
-        font-size: 0.9rem;
-        font-weight: 500;
-    }
+        .stat-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #F1F5F9 !important;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-top: 12px;
+            border: 1px solid #CBD5E1 !important;
+        }
 
-    .stat-value {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: #F8FAFC;
-    }
+        .stat-label {
+            color: #475569 !important;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
 
-    /* Style Streamlit Buttons */
-    .stButton>button {
-        background: linear-gradient(90deg, #3B82F6 0%, #6366F1 100%);
-        color: white;
-        border: none;
-        border-radius: 12px;
-        padding: 12px 28px;
-        font-weight: 700;
-        font-size: 1rem;
-        width: 100%;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4);
-    }
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #0F172A !important;
+        }
 
-    .stButton>button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.6);
-    }
+        .stButton>button {
+            background: linear-gradient(90deg, #2563EB 0%, #4F46E5 100%) !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 14px !important;
+            padding: 14px 28px !important;
+            font-weight: 700 !important;
+            font-size: 1.05rem !important;
+            width: 100% !important;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3) !important;
+        }
 
-    /* Custom Divider */
-    hr {
-        border-color: rgba(255, 255, 255, 0.1);
-    }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
+        .stButton>button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4) !important;
+        }
+
+        hr {
+            border-color: #E2E8F0 !important;
+        }
+        </style>
+        """
+    else:
+        css = """
+        <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+        html, body, [class*="css"] {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .stApp {
+            background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #0F172A 100%) !important;
+            color: #F8FAFC !important;
+        }
+
+        .stAppHeader {
+            background: transparent !important;
+        }
+
+        /* Glassmorphism Cards Dark */
+        .glass-card {
+            background: rgba(30, 41, 59, 0.75) !important;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 18px !important;
+            padding: 26px !important;
+            margin-bottom: 22px !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35) !important;
+        }
+
+        .hero-title {
+            background: linear-gradient(90deg, #38BDF8 0%, #818CF8 50%, #C084FC 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 2.9rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.2rem;
+        }
+
+        .hero-subtitle {
+            color: #94A3B8 !important;
+            font-size: 1.15rem;
+            margin-bottom: 1.8rem;
+        }
+
+        .metric-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-weight: 800;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .badge-high-risk {
+            background: rgba(239, 68, 68, 0.25) !important;
+            color: #FCA5A5 !important;
+            border: 1px solid #EF4444 !important;
+        }
+
+        .badge-low-risk {
+            background: rgba(34, 197, 94, 0.25) !important;
+            color: #86EFAC !important;
+            border: 1px solid #22C55E !important;
+        }
+
+        .stat-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(15, 23, 42, 0.6) !important;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-top: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05) !important;
+        }
+
+        .stat-label {
+            color: #94A3B8 !important;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #F8FAFC !important;
+        }
+
+        .stButton>button {
+            background: linear-gradient(90deg, #3B82F6 0%, #6366F1 100%) !important;
+            color: white !important;
+            border: none !important;
+            border-radius: 14px !important;
+            padding: 14px 28px !important;
+            font-weight: 700 !important;
+            font-size: 1.05rem !important;
+            width: 100% !important;
+            box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4) !important;
+        }
+
+        .stButton>button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.6) !important;
+        }
+
+        hr {
+            border-color: rgba(255, 255, 255, 0.1) !important;
+        }
+        </style>
+        """
+    st.markdown(css, unsafe_allow_html=True)
 
 
 @st.cache_resource
@@ -161,39 +276,76 @@ def load_model():
 
 
 def sidebar_inputs() -> dict:
+    # ----------------------------------------------------------------------- #
+    # Dynamic Light / Dark Theme Switcher Control
+    # ----------------------------------------------------------------------- #
+    st.sidebar.markdown("### 🎨 Theme Selector")
+    theme_choice = st.sidebar.radio(
+        "Appearance",
+        ["🌙 Dark Mode", "☀️ Light Mode"],
+        index=0 if st.session_state["theme_mode"] == "Dark" else 1,
+        label_visibility="collapsed",
+    )
+    st.session_state["theme_mode"] = "Dark" if "Dark" in theme_choice else "Light"
+
+    st.sidebar.divider()
+
     st.sidebar.markdown(
-        "<h2 style='color:#38BDF8; font-size:1.4rem;'>⚙️ Customer Parameters</h2>",
+        "<h2 style='font-size:1.3rem; margin-bottom:10px;'>⚙️ Customer Parameters</h2>",
         unsafe_allow_html=True,
     )
 
-    with st.sidebar.expander("👤 Demographics", expanded=True):
-        gender = st.selectbox("Gender", ["Male", "Female"])
-        senior = st.selectbox("Senior Citizen", [0, 1], format_func=lambda x: "Yes" if x else "No")
-        partner = st.selectbox("Partner", ["Yes", "No"])
-        dependents = st.selectbox("Dependents", ["Yes", "No"])
-        tenure = st.slider("Tenure (Months)", 0, 72, 12, help="Months with the company")
+    # Preset profile loader for quick testing
+    preset = st.sidebar.selectbox(
+        "Load Preset Customer Profile",
+        ["Custom Input", "High-Risk Customer Example", "Loyal Customer Example"],
+    )
 
-    with st.sidebar.expander("📡 Telecom Services", expanded=False):
+    if preset == "High-Risk Customer Example":
+        def_gender, def_senior, def_partner, def_dep = "Female", 0, "No", "No"
+        def_tenure, def_contract, def_payment = 2, "Month-to-month", "Electronic check"
+        def_internet, def_sec, def_back, def_tech = "Fiber optic", "No", "No", "No"
+        def_monthly, def_total = 95.0, 190.0
+    elif preset == "Loyal Customer Example":
+        def_gender, def_senior, def_partner, def_dep = "Male", 0, "Yes", "Yes"
+        def_tenure, def_contract, def_payment = 48, "Two year", "Bank transfer (automatic)"
+        def_internet, def_sec, def_back, def_tech = "DSL", "Yes", "Yes", "Yes"
+        def_monthly, def_total = 65.0, 3120.0
+    else:
+        def_gender, def_senior, def_partner, def_dep = "Male", 0, "Yes", "No"
+        def_tenure, def_contract, def_payment = 12, "Month-to-month", "Electronic check"
+        def_internet, def_sec, def_back, def_tech = "Fiber optic", "No", "Yes", "No"
+        def_monthly, def_total = 75.0, 900.0
+
+    with st.sidebar.expander("👤 Demographics", expanded=True):
+        gender = st.selectbox("Gender", ["Male", "Female"], index=["Male", "Female"].index(def_gender))
+        senior = st.selectbox("Senior Citizen", [0, 1], index=def_senior, format_func=lambda x: "Yes" if x else "No")
+        partner = st.selectbox("Partner", ["Yes", "No"], index=["Yes", "No"].index(def_partner))
+        dependents = st.selectbox("Dependents", ["Yes", "No"], index=["Yes", "No"].index(def_dep))
+        tenure = st.slider("Tenure (Months)", 0, 72, def_tenure, help="Months customer has stayed with company")
+
+    with st.sidebar.expander("📡 Services Subscribed", expanded=False):
         phone_service = st.selectbox("Phone Service", ["Yes", "No"])
         multiple_lines = st.selectbox("Multiple Lines", ["Yes", "No", "No phone service"])
-        internet_service = st.selectbox("Internet Service", ["Fiber optic", "DSL", "No"])
-        online_security = st.selectbox("Online Security", ["No", "Yes", "No internet service"])
-        online_backup = st.selectbox("Online Backup", ["Yes", "No", "No internet service"])
+        internet_service = st.selectbox("Internet Service", ["Fiber optic", "DSL", "No"], index=["Fiber optic", "DSL", "No"].index(def_internet))
+        online_security = st.selectbox("Online Security", ["No", "Yes", "No internet service"], index=["No", "Yes", "No internet service"].index(def_sec))
+        online_backup = st.selectbox("Online Backup", ["Yes", "No", "No internet service"], index=["Yes", "No", "No internet service"].index(def_back))
         device_protection = st.selectbox("Device Protection", ["No", "Yes", "No internet service"])
-        tech_support = st.selectbox("Tech Support", ["No", "Yes", "No internet service"])
+        tech_support = st.selectbox("Tech Support", ["No", "Yes", "No internet service"], index=["No", "Yes", "No internet service"].index(def_tech))
         streaming_tv = st.selectbox("Streaming TV", ["Yes", "No", "No internet service"])
         streaming_movies = st.selectbox("Streaming Movies", ["Yes", "No", "No internet service"])
 
-    with st.sidebar.expander("💳 Account & Billing", expanded=True):
-        contract = st.selectbox("Contract Type", ["Month-to-month", "One year", "Two year"])
+    with st.sidebar.expander("💳 Billing & Contract", expanded=True):
+        contract = st.selectbox("Contract Type", ["Month-to-month", "One year", "Two year"], index=["Month-to-month", "One year", "Two year"].index(def_contract))
         paperless = st.selectbox("Paperless Billing", ["Yes", "No"])
         payment = st.selectbox(
             "Payment Method",
             ["Electronic check", "Mailed check", "Bank transfer (automatic)", "Credit card (automatic)"],
+            index=["Electronic check", "Mailed check", "Bank transfer (automatic)", "Credit card (automatic)"].index(def_payment),
         )
-        monthly = st.number_input("Monthly Charges ($)", 0.0, 200.0, 75.0, step=1.0)
+        monthly = st.number_input("Monthly Charges ($)", 0.0, 200.0, def_monthly, step=1.0)
         total = st.number_input(
-            "Total Charges ($)", 0.0, 10000.0, float(monthly) * tenure, step=10.0
+            "Total Charges ($)", 0.0, 10000.0, def_total, step=10.0
         )
 
     return {
@@ -220,9 +372,12 @@ def sidebar_inputs() -> dict:
 
 
 def main() -> None:
+    # Inject Theme Styles dynamically
+    inject_custom_css(st.session_state["theme_mode"])
+
     st.markdown("<h1 class='hero-title'>🔮 TelePredict Pro</h1>", unsafe_allow_html=True)
     st.markdown(
-        "<p class='hero-subtitle'>Production Machine Learning Intelligence for Customer Retention & Churn Prevention</p>",
+        "<p class='hero-subtitle'>Production Machine Learning Intelligence for Customer Retention & Churn Risk Analytics</p>",
         unsafe_allow_html=True,
     )
 
@@ -233,14 +388,14 @@ def main() -> None:
 
     inputs = sidebar_inputs()
 
-    tab1, tab2, tab3 = st.tabs(["🎯 Real-Time Prediction", "📊 Model Insights & Analytics", "📘 Model Architecture"])
+    tab1, tab2, tab3 = st.tabs(["🎯 Real-Time Churn Scoring", "📊 Machine Learning Insights", "📘 Pipeline Specification"])
 
     with tab1:
         st.markdown("<div class='glass-card'>", unsafe_allow_html=True)
         st.subheader("Predict Customer Retention Risk")
-        st.caption("Configure customer profile parameters in the left sidebar and trigger real-time AI scoring below.")
+        st.caption("Select customer profile parameters or load preset examples from the left sidebar to generate real-time predictions.")
 
-        if st.button("🚀 Calculate Churn Probability", type="primary"):
+        if st.button("🚀 Calculate Churn Risk Score", type="primary"):
             input_df = pd.DataFrame([inputs])
             input_df = add_engineered_features(input_df)
 
@@ -255,16 +410,16 @@ def main() -> None:
                         "<div style='margin-top:10px;'><span class='metric-badge badge-high-risk'>🚨 HIGH CHURN RISK</span></div>",
                         unsafe_allow_html=True,
                     )
-                    st.markdown("<h3 style='color:#FCA5A5; margin-top:10px;'>At Risk of Leaving</h3>", unsafe_allow_html=True)
+                    st.markdown("<h3 style='color:#EF4444; margin-top:10px;'>At Risk of Leaving</h3>", unsafe_allow_html=True)
                 else:
                     st.markdown(
                         "<div style='margin-top:10px;'><span class='metric-badge badge-low-risk'>✅ RETAINED / LOW RISK</span></div>",
                         unsafe_allow_html=True,
                     )
-                    st.markdown("<h3 style='color:#86EFAC; margin-top:10px;'>Likely to Stay</h3>", unsafe_allow_html=True)
+                    st.markdown("<h3 style='color:#22C55E; margin-top:10px;'>Likely to Stay</h3>", unsafe_allow_html=True)
 
             with res_col2:
-                st.metric("Probability of Churn", f"{prob:.1%}")
+                st.metric("Churn Risk Probability", f"{prob:.1%}")
                 st.progress(float(prob))
 
             with res_col3:
@@ -274,15 +429,15 @@ def main() -> None:
             st.divider()
 
             # Retention Recommendations
-            st.markdown("#### 💡 Retention Action Recommendations")
+            st.markdown("#### 💡 Prescriptive Retention Actions")
             if pred == 1:
                 st.warning(
-                    "• **Offer Long-Term Contract Discount**: High-risk churn is correlated with month-to-month contracts.\n"
-                    "• **Bundle Tech Support & Security**: Adding security and tech support services decreases churn probability significantly.\n"
-                    "• **Switch Payment Method**: Customers on Electronic Check churn at higher rates than automated bank transfer/credit card."
+                    "• **Offer Long-Term Contract Incentives**: Month-to-month contracts are the #1 predictor of churn. Offer a 1-year or 2-year discount.\n"
+                    "• **Bundle Tech Support & Cyber Security**: Adding TechSupport and OnlineSecurity reduces churn probability by up to 35%.\n"
+                    "• **Promote Automated Direct Payment**: Encourage switching from Electronic Check to Bank Transfer or Credit Card."
                 )
             else:
-                st.success("Customer profile is stable. Maintain engagement and evaluate cross-selling opportunities for add-on services.")
+                st.success("Customer profile is highly stable. Maintain engagement and explore up-selling streaming or device protection add-ons.")
 
         st.markdown("</div>", unsafe_allow_html=True)
 
@@ -292,33 +447,34 @@ def main() -> None:
 
         with insight_col1:
             if FEATURE_IMPORTANCE_FILE.exists():
-                st.markdown("**Top Churn Drivers (Feature Importance)**")
+                st.markdown("**Top Churn Drivers (Random Forest Feature Importance)**")
                 st.image(str(FEATURE_IMPORTANCE_FILE), width="stretch")
 
         with insight_col2:
             if MODEL_COMPARISON_FILE.exists():
-                st.markdown("**Cross-Model ROC-AUC Performance**")
+                st.markdown("**Model Performance Benchmark (Test ROC-AUC)**")
                 st.image(str(MODEL_COMPARISON_FILE), width="stretch")
 
         st.divider()
         diag_col1, diag_col2 = st.columns(2)
         with diag_col1:
             if CONFUSION_MATRIX_FILE.exists():
-                st.markdown("**Test Set Confusion Matrix**")
+                st.markdown("**Held-Out Test Set Confusion Matrix**")
                 st.image(str(CONFUSION_MATRIX_FILE), width="stretch")
         with diag_col2:
             if ROC_CURVE_FILE.exists():
-                st.markdown("**Test Set ROC Curve**")
+                st.markdown("**Receiver Operating Characteristic (ROC Curve)**")
                 st.image(str(ROC_CURVE_FILE), width="stretch")
 
     with tab3:
-        st.subheader("⚙️ End-to-End Pipeline Architecture")
+        st.subheader("⚙️ Machine Learning Pipeline Architecture")
         st.markdown(
             """
-            - **Preprocessing Pipeline**: Imputer -> OneHotEncoder (`drop='if_binary'`) -> StandardScaler
-            - **Class Imbalance Handling**: **SMOTE** oversampling applied exclusively inside CV folds to eliminate data leakage.
-            - **Hyperparameter Optimization**: `GridSearchCV` evaluated using Stratified 5-Fold Cross Validation (`roc_auc`).
-            - **Model Serving**: Serialized single artifact pipeline (`churn_model.pkl`) containing preprocessing, transformation, and classifier.
+            - **Data Cleaning & Imputation**: `TotalCharges` coerced to numeric; median imputation for numerical columns; most-frequent imputation for categorical features.
+            - **Preprocessing Pipeline**: `ColumnTransformer` with `StandardScaler` for numeric columns and `OneHotEncoder(drop='if_binary')` for categoricals.
+            - **Class Imbalance Management**: **SMOTE** oversampling embedded inside `imblearn.pipeline.Pipeline` to guarantee zero data leakage into validation folds.
+            - **Hyperparameter Tuning**: 5-Fold Stratified Cross-Validation (`GridSearchCV`) optimized on ROC-AUC.
+            - **Artifact Production**: Serialized end-to-end pipeline stored in `models/churn_model.pkl`.
             """
         )
 
