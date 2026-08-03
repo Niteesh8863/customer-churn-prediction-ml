@@ -293,23 +293,23 @@ def main() -> None:
         with insight_col1:
             if FEATURE_IMPORTANCE_FILE.exists():
                 st.markdown("**Top Churn Drivers (Feature Importance)**")
-                st.image(str(FEATURE_IMPORTANCE_FILE), use_container_width=True)
+                st.image(str(FEATURE_IMPORTANCE_FILE), width="stretch")
 
         with insight_col2:
             if MODEL_COMPARISON_FILE.exists():
                 st.markdown("**Cross-Model ROC-AUC Performance**")
-                st.image(str(MODEL_COMPARISON_FILE), use_container_width=True)
+                st.image(str(MODEL_COMPARISON_FILE), width="stretch")
 
         st.divider()
         diag_col1, diag_col2 = st.columns(2)
         with diag_col1:
             if CONFUSION_MATRIX_FILE.exists():
                 st.markdown("**Test Set Confusion Matrix**")
-                st.image(str(CONFUSION_MATRIX_FILE), use_container_width=True)
+                st.image(str(CONFUSION_MATRIX_FILE), width="stretch")
         with diag_col2:
             if ROC_CURVE_FILE.exists():
                 st.markdown("**Test Set ROC Curve**")
-                st.image(str(ROC_CURVE_FILE), use_container_width=True)
+                st.image(str(ROC_CURVE_FILE), width="stretch")
 
     with tab3:
         st.subheader("⚙️ End-to-End Pipeline Architecture")
